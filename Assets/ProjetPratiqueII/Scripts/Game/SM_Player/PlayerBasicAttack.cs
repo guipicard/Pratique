@@ -37,7 +37,7 @@ public class PlayerBasicAttack : PlayerState
     private void LaunchBasicAttack()
     {
         // LevelManager.instance.SetTarget(m_TargetEnemy);
-        GameObject bullet =  LevelManager.instance.SpawnObj("Player_Bullet", m_BulletSpawner.position, Quaternion.identity);
-        bullet.GetComponent<PlayerBullet>().SetTarget(m_TargetEnemy);
+        GameObject bullet =  LevelManager.instance.SpawnObj("Player_Bullet", m_BulletSpawner.position, m_BulletSpawner.transform.rotation);
+        bullet.GetComponent<PlayerBullet>().SetTarget(m_TargetEnemy, m_BulletSpawner.transform.position);
     }
 }

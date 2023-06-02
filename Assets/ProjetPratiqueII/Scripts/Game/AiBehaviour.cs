@@ -70,10 +70,6 @@ public class AiBehaviour : MonoBehaviour
 
         m_PlayerDistance = Vector3.Distance(player.transform.position, transform.position);
         StateToggler();
-        if (HP <= 0)
-        {
-            LevelManager.instance.ToggleInactive(gameObject);
-        }
 
         m_AiCanvas.transform.rotation = player.GetComponent<PlayerStateMachine>().m_PlayerCanvas.transform.rotation;
     }
@@ -168,9 +164,9 @@ public class AiBehaviour : MonoBehaviour
         if (other.gameObject.CompareTag(m_DamageTag))
         {
             TakeDamage(LevelManager.instance.playerDamage);
-            if (HP >= 0)
+            if (HP <= 0)
             {
-                LevelManager.instance.ToggleInactive(other.gameObject);
+                LevelManager.instance.ToggleInactive(gameObject);
             }
         }
 
