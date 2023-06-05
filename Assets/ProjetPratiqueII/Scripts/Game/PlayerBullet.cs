@@ -38,32 +38,34 @@ public class PlayerBullet : MonoBehaviour
     {
         if (m_Target != null)
         {
-            
             Vector3 currentPos = transform.position;
             Vector3 currentTargetPos = m_Target.transform.position + m_HeightOffset;
+            m_InitialDistance = Vector3.Distance(m_InitialPosition, currentTargetPos);
+            
             Vector3 newVelocity = (currentTargetPos - currentPos).normalized;
             
-            transform.LookAt(currentPos + newVelocity);
-
-            
             Vector3 IT = currentTargetPos - m_InitialPosition;
-            Vector3 IC = currentTargetPos - m_InitialPosition;
-
-            float IT_magnitude = IT.magnitude;
-            Vector3 IT_norm = IT / IT_magnitude;
-
-            float distance = Vector3.Dot(IC, IT_norm);
-
+            Vector3 IC = currentPos - m_InitialPosition;
+            
+            Vector3 IT_norm = IC.normalized;
+            
+            float distance = Vector3.Dot(IT_norm, IC);
+            
             distance = Mathf.Abs(distance);
 
             float t = (m_InitialDistance - distance) / m_InitialDistance;
+            t = Mathf.Abs(t - 1);
+            if (t > 1.0f) t = 1.0f;
+            if (t < 0.0f) t = 0.0f;
+
+            float maxSpeed = t > 0.3f ? m_Speed * 1.5f : m_Speed;
+            m_Rigidbody.velocity = Vector3.Lerp(m_InitialTargetVelocity * maxSpeed, newVelocity * maxSpeed, t);
             
-            Debug.Log(t);
+            transform.LookAt(currentTargetPos);
             
-            m_Rigidbody.velocity = Vector3.Lerp(m_InitialTargetVelocity, transform.forward * m_Speed, t);
-            
-            if (Vector3.Distance(transform.position, m_Target.transform.position) <= 1.0f || Vector3.Distance(transform.position, m_InitialPosition) > 10.0f)
+            if (Vector3.Distance(currentPos, currentTargetPos) <= 0.2f)
             {
+                m_Target.GetComponent<AiBehaviour>().TakeDamage(LevelManager.instance.playerDamage);
                 LevelManager.instance.ToggleInactive(gameObject);
             }
         }
@@ -78,7 +80,9 @@ public class PlayerBullet : MonoBehaviour
             Vector3 targetPos = m_Target.transform.position + m_HeightOffset;
             m_InitialPosition = _pos;
             m_InitialDistance = Mathf.Abs(Vector3.Distance(_pos, targetPos));
-            m_InitialTargetVelocity = (targetPos - _pos).normalized + (new Vector3(180, 0, 0).normalized);
+            float x = Random.Range(-45, 45);
+            float y = 45 - Mathf.Abs(x);
+            m_InitialTargetVelocity = (targetPos - _pos).normalized + (new Vector3(x, y, 0).normalized);
         }
         else
         {
@@ -86,11 +90,5 @@ public class PlayerBullet : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.layer == 7)
-        {
-            LevelManager.instance.ToggleInactive(gameObject);
-        }
-    }
+
 }

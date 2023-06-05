@@ -79,7 +79,6 @@ public abstract class PlayerState
     protected UnityEngine.Ray m_GroundRay;
     protected UnityEngine.RaycastHit m_GroundHit;
     
-    // HASED TAGS!!!! (get it? hastag -> # (#yoloswag))
     protected static readonly int Running = Animator.StringToHash("Running");
     protected static readonly int Attack = Animator.StringToHash("Attack");
     protected static readonly int MineAnim = Animator.StringToHash("MineAnim");

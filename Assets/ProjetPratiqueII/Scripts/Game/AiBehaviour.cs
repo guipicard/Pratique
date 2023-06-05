@@ -153,23 +153,18 @@ public class AiBehaviour : MonoBehaviour
         m_IsStabbing = false;
     }
 
-    private void TakeDamage(float _damage)
+    public void TakeDamage(float _damage)
     {
         HP -= _damage;
+        if (HP <= 0 && gameObject.activeSelf)
+        {
+            LevelManager.instance.ToggleInactive(gameObject);
+        }
         m_HealthBar.value = HP / 100;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag(m_DamageTag))
-        {
-            TakeDamage(LevelManager.instance.playerDamage);
-            if (HP <= 0)
-            {
-                LevelManager.instance.ToggleInactive(gameObject);
-            }
-        }
-
         if (other.gameObject.CompareTag("AOE"))
         {
             LevelManager.instance.RedSpellAction += TakeDamage;
