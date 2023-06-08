@@ -52,11 +52,6 @@ public class PlayerMoving : PlayerState
             // MINE
             _StateMachine.SetState(new PlayerMining(_StateMachine));
         }
-        else if (m_TargetEnemy != null)
-        {
-            // ATTACK
-            _StateMachine.SetState(new PlayerBasicAttack(_StateMachine));
-        }
         else
         {
             _StateMachine.SetState(new PlayerIdle(_StateMachine));

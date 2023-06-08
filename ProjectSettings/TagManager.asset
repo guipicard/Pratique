@@ -20,11 +20,14 @@ TagManager:
   - Laser
   - Walls
   - AOE
+  - Blue_Spear
+  - Yellow_Hammer
+  - Red_Arrow
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
   - Crystals

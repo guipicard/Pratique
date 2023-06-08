@@ -70,7 +70,6 @@ public abstract class PlayerState
     private int spellsCost;
     private int unlockPrice;
     protected Quaternion m_BulletRotation;
-    private GameObject m_OutlinedGameObject;
 
     // PUBLIC
     public Canvas m_PlayerCanvas;
@@ -170,6 +169,5 @@ public abstract class PlayerState
     spellsCost = _stateMachine.spellsCost;
     unlockPrice = _stateMachine.unlockPrice;
     m_BulletRotation = _stateMachine.m_BulletRotation;
-    m_OutlinedGameObject = _stateMachine.m_OutlinedGameObject;
     }
 }

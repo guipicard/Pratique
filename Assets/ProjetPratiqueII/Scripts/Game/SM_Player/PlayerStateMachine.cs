@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using TMPro;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -97,7 +98,7 @@ public class PlayerStateMachine : MonoBehaviour
     [Header("Cursor")]
     [Space] //
     [HideInInspector]
-    public GameObject m_OutlinedGameObject;
+    private GameObject m_OutlinedGameObject;
 
     [SerializeField] public Texture2D m_MineCursor;
     [SerializeField] public Texture2D m_AttackCursor;
@@ -117,28 +118,24 @@ public class PlayerStateMachine : MonoBehaviour
         m_ShieldElapsed = m_ShieldTimer;
         m_Aiming = false;
         m_Mining = false;
-
         m_BlueSpell = false;
         m_YellowSpell = false;
         m_GreenSpell = false;
         m_RedSpell = false;
-
         m_YellowSpellElapsed = m_YellowSpellTimer;
         m_RigidBody = GetComponent<Rigidbody>();
         m_Animator = GetComponent<Animator>();
         m_Transform = transform;
-
         m_Direction = Vector3.zero;
-
         m_TargetRotation = transform.rotation;
-
         m_MainCamera = Camera.main;
-
         m_HealthCapacity = m_MinHealth;
         m_Hp = m_MinHealth;
         m_RegenerateAmount = m_MinRegenerateAmount;
         m_RegenerateElapsed = 0;
+        m_OutlinedGameObject = null;
         UpdateHealthBar();
+
         SetState(new PlayerIdle(this));
     }
 
@@ -150,20 +147,13 @@ public class PlayerStateMachine : MonoBehaviour
     void Update()
     {
         SpellsInput();
-        if (Input.GetMouseButtonDown(1))
-        {
-            SetInteraction();
-        }
+        SetInteraction();
 
 
         _currentState.UpdateExecute();
 
         CheckBoosRoom();
         SpellTimers();
-        if (m_OutlinedGameObject != null)
-        {
-            ToggleEnableOutline(true);
-        }
     }
 
     private void FixedUpdate()
@@ -181,39 +171,85 @@ public class PlayerStateMachine : MonoBehaviour
     private void SetInteraction()
     {
         m_TargetRay = m_MainCamera.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(m_TargetRay, out m_HitInfo))
+        if (Input.GetMouseButtonDown(1)) // MOVE
         {
-            if (m_HitInfo.collider.gameObject.layer == 7)
+            if (Physics.Raycast(m_TargetRay, out m_TargetHit, Mathf.Infinity, 1 << 8))
             {
-                m_StoppingDistance = m_AttackRange;
-                m_TargetEnemy = m_HitInfo.collider.gameObject;
-                m_Destination = m_TargetEnemy.transform.position;
-            }
-            else
-            {
-                m_TargetEnemy = null;
-            }
-
-            if (m_HitInfo.collider.gameObject.layer == 8)
-            {
-                m_Destination = m_HitInfo.point;
-                m_StoppingDistance = 0;
-            }
-
-            if (m_HitInfo.collider.gameObject.layer == 6)
-            {
-                m_TargetCrystal = m_HitInfo.collider.gameObject;
-                m_StoppingDistance = m_MiningRange;
-                m_Destination = m_TargetCrystal.transform.position;
-            }
-            else
-            {
-                m_Mining = false;
                 m_TargetCrystal = null;
+                m_Destination = m_TargetHit.point;
+                m_StoppingDistance = 0;
+                SetState(new PlayerMoving(this));
             }
-
-            SetState(new PlayerMoving(this));
         }
+        else if (Input.GetKeyDown(KeyCode.Q)) // AUTO ATTACK
+        {
+            if (Physics.Raycast(m_TargetRay, out m_TargetHit))
+            {
+                if (m_TargetHit.collider.gameObject.layer == 7)
+                {
+                    if (Vector3.Distance(transform.position, m_TargetHit.collider.transform.position) < m_AttackRange)
+                    {
+                        m_TargetCrystal = null;
+                        m_TargetEnemy = m_TargetHit.collider.gameObject;
+                        LaunchBasicAttack();
+                    }
+                    else
+                    {
+                        LevelManager.instance.ErrorAction?.Invoke("Target out of range.");
+                    }
+                }
+                else
+                {
+                    LevelManager.instance.ErrorAction?.Invoke("Invalid target.");
+                }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Space)) // MINING
+        {
+            if (Physics.Raycast(m_TargetRay, out m_TargetHit))
+            {
+                if (m_TargetHit.collider.gameObject.layer == 6)
+                {
+                    m_TargetCrystal = m_TargetHit.collider.gameObject;
+                    m_StoppingDistance = m_MiningRange;
+                    m_Destination = m_TargetCrystal.transform.position;
+                    SetState(new PlayerMoving(this));
+                }
+                else
+                {
+                    m_Mining = false;
+                    m_TargetCrystal = null;
+                }
+            }
+        }
+        else
+        {
+            if (Physics.Raycast(m_TargetRay, out m_TargetHit))
+            {
+                if (m_OutlinedGameObject != null)
+                {
+                    if (m_OutlinedGameObject != m_TargetHit.collider.gameObject || m_Aiming)
+                    {
+                        m_OutlinedGameObject.GetComponent<Outline>().enabled = false;
+                        m_OutlinedGameObject = null;
+                        Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
+                    }
+                }
+
+                if (m_TargetHit.collider.gameObject.layer == 6 || m_TargetHit.collider.gameObject.layer == 7)
+                {
+                    m_OutlinedGameObject = m_TargetHit.collider.gameObject;
+                    ToggleEnableOutline(true);
+                }
+            }
+        }
+    }
+
+    private void LaunchBasicAttack()
+    {
+        GameObject bullet = LevelManager.instance.SpawnObj("Player_Bullet", m_BulletSpawner.position,
+            m_BulletSpawner.transform.rotation);
+        bullet.GetComponent<PlayerBullet>().SetTarget(m_TargetEnemy, m_BulletSpawner.transform.position);
     }
 
     private void StartTime()
@@ -474,25 +510,6 @@ public class PlayerStateMachine : MonoBehaviour
                 LevelManager.instance.RedSpellAction = null;
             }
         }
-        else
-        {
-            if (m_AimSphere.activeSelf) m_AimSphere.SetActive(false);
-
-            if (Physics.Raycast(m_MouseRay, out m_TargetHit, Mathf.Infinity))
-            {
-                Outline outlineComponent = m_TargetHit.collider.gameObject.GetComponent<Outline>();
-                if (outlineComponent && Time.timeScale == 1.0f)
-                {
-                    m_OutlinedGameObject = m_TargetHit.collider.gameObject;
-                }
-                else
-                {
-                    if (m_OutlinedGameObject != null) ToggleEnableOutline(false);
-                    Cursor.SetCursor(null, Vector2.zero, CursorMode.Auto);
-                    m_OutlinedGameObject = null;
-                }
-            }
-        }
 
         if (m_RegenerateElapsed >= 0.0f)
         {
@@ -516,14 +533,15 @@ public class PlayerStateMachine : MonoBehaviour
 
     private void ToggleEnableOutline(bool _state)
     {
+        if (m_OutlinedGameObject == null) return;
+
+        m_OutlinedGameObject.GetComponent<Outline>().enabled = _state;
         if (m_OutlinedGameObject.layer == 6)
         {
-            m_OutlinedGameObject.GetComponent<CrystalEvents>().GetOutlineComponent().enabled = _state;
             Cursor.SetCursor(m_MineCursor, Vector2.zero, CursorMode.Auto);
         }
         else if (m_OutlinedGameObject.layer == 7)
         {
-            m_OutlinedGameObject.GetComponent<AiBehaviour>().GetOutlineComponent().enabled = _state;
             Cursor.SetCursor(m_AttackCursor, Vector2.zero, CursorMode.Auto);
         }
     }

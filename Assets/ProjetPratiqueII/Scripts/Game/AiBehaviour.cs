@@ -67,11 +67,10 @@ public class AiBehaviour : MonoBehaviour
         {
             m_CooldownElapsed += Time.deltaTime;
         }
-
         m_PlayerDistance = Vector3.Distance(player.transform.position, transform.position);
-        StateToggler();
-
         m_AiCanvas.transform.rotation = player.GetComponent<PlayerStateMachine>().m_PlayerCanvas.transform.rotation;
+        
+        StateToggler();
     }
 
     private void OnEnable()

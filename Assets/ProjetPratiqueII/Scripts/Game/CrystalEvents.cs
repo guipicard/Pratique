@@ -25,6 +25,10 @@ public class CrystalEvents : MonoBehaviour
         m_CanGetDestroyed = Vector3.Distance(transform.position, m_InitialPosition) > 9.0f;
     }
 
+    private void OnDisable()
+    {
+    }
+
     public void GetMined()
     {
         LevelManager.instance.SpawnObj(m_PartsTag, transform.position, Quaternion.identity);

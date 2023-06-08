@@ -2,17 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AiIdle : MonoBehaviour
+public class AiIdle : AiState
 {
-    // Start is called before the first frame update
-    void Start()
+    public AiIdle(AIStateMachine stateMachine) : base(stateMachine)
     {
-        
+        m_NavmeshAgent.destination = m_Transform.position;
+        m_Animator.SetBool(running, false);
+        m_Animator.SetInteger(moveState, 0);
+        m_Animator.SetBool(combat, false);
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void UpdateExecute()
     {
-        
+        m_PlayerDistance = Vector3.Distance(player.transform.position, m_Transform.position);
+        if (m_PlayerDistance < m_TriggerDistance)
+        {
+            _AiStateMachine.SetState(new AiMoving(_AiStateMachine));
+        }
+    }
+
+    public override void FixedUpdateExecute()
+    {
     }
 }

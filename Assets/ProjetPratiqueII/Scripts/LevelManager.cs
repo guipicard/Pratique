@@ -36,8 +36,6 @@ public class LevelManager : MonoBehaviour
     public int m_UnlockPrice;
     public int m_SpellsCost;
 
-    private GameObject m_EnemyTarget;
-
     private static LevelManager levelManager;
 
     public static LevelManager instance
@@ -64,7 +62,6 @@ public class LevelManager : MonoBehaviour
 
     private void Awake()
     {
-        
     }
 
     void Start()
@@ -87,7 +84,6 @@ public class LevelManager : MonoBehaviour
         m_RedCollected = 0;
         m_YellowCollected = 0;
         m_BlueCollected = 0;
-        m_EnemyTarget = null;
     }
 
     public GameObject SpawnObj(string _tag, Vector3 _position, Quaternion _rotation)

@@ -8,17 +8,17 @@ public class PlayerMining : PlayerState
     public PlayerMining(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         m_Animator.SetBool(Running, false);
-        m_Transform.LookAt(m_HitInfo.collider.transform.position);
         if (!m_Mining) m_Animator.SetTrigger(MineAnim);
         m_Mining = true;
         m_Elapsed = 0.0f;
         m_CurrentVelocity = Vector3.zero;
+        m_Transform.LookAt(m_TargetCrystal.transform.position);
     }
 
     public override void UpdateExecute()
     {
         m_Elapsed += Time.deltaTime;
-        if (m_Elapsed >= 0.2f)
+        if (m_Elapsed >= 0.25)
         {
             MineCrystal();
         }
@@ -30,11 +30,12 @@ public class PlayerMining : PlayerState
     
     private void MineCrystal()
     {
-        if (m_TargetCrystal != null && m_HitInfo.collider.gameObject.layer == 6)
+        if (m_TargetCrystal != null)
         {
             m_TargetCrystal.GetComponent<CrystalEvents>().GetMined();
             m_TargetCrystal = null;
             m_Mining = false;
+            _StateMachine.SetState(new PlayerIdle(_StateMachine));
         }
     }
 }
