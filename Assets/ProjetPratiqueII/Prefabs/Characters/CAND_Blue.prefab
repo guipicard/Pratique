@@ -5808,7 +5808,6 @@ GameObject:
   - component: {fileID: 4170606063271481412}
   - component: {fileID: 4170606063271481419}
   - component: {fileID: 7657516177547308480}
-  - component: {fileID: 3892399925614341568}
   m_Layer: 0
   m_Name: Spear04
   m_TagString: Blue_Spear
@@ -5892,19 +5891,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.24822693, y: 2.4826071, z: 0.10115744}
   m_Center: {x: 0.000000019842666, y: 0.6580428, z: -0.000000062338366}
---- !u!114 &3892399925614341568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4170606063271481417}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2f1905646f92454788f0a5e64f1f101, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Damage: 20
 --- !u!1 &4170606063275776602
 GameObject:
   m_ObjectHideFlags: 0

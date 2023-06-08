@@ -7,7 +7,6 @@ public class AiIdle : AiState
     public AiIdle(AIStateMachine stateMachine) : base(stateMachine)
     {
         m_NavmeshAgent.destination = m_Transform.position;
-        m_Animator.SetBool(running, false);
         m_Animator.SetInteger(moveState, 0);
         m_Animator.SetBool(combat, false);
     }

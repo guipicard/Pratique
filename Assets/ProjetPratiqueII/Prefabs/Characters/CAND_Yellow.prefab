@@ -9576,7 +9576,6 @@ GameObject:
   - component: {fileID: 973920803732227741}
   - component: {fileID: 6736936512462275728}
   - component: {fileID: 805766104832415775}
-  - component: {fileID: 7904559475241054312}
   m_Layer: 0
   m_Name: OHS11_Hammer
   m_TagString: Yellow_Hammer
@@ -9660,19 +9659,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.2760252, y: 1.3807516, z: 0.7580919}
   m_Center: {x: 0.000000015986934, y: 0.42871198, z: -0.06463314}
---- !u!114 &7904559475241054312
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3915279278720358968}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2f1905646f92454788f0a5e64f1f101, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Damage: 20
 --- !u!1 &3943512980221029675
 GameObject:
   m_ObjectHideFlags: 0
@@ -10328,7 +10314,6 @@ GameObject:
   - component: {fileID: 3456471401284256892}
   - component: {fileID: 7199070736362869069}
   - component: {fileID: 5216620582155931194}
-  - component: {fileID: 1820876495088350333}
   m_Layer: 0
   m_Name: OHS11_Hammer
   m_TagString: Yellow_Hammer
@@ -10412,19 +10397,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.27602506, y: 1.3807508, z: 0.75809187}
   m_Center: {x: 0.000000051890964, y: 0.4287117, z: -0.0646331}
---- !u!114 &1820876495088350333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4182865360547414725}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b2f1905646f92454788f0a5e64f1f101, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Damage: 10
 --- !u!1 &4210314189764553101
 GameObject:
   m_ObjectHideFlags: 0

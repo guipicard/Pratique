@@ -10,11 +10,12 @@ public class AiMoving : AiState
     private RaycastHit m_BackHit;
     private RaycastHit m_LeftHit;
     private RaycastHit m_RightHit;
+    private Vector3 m_BackObstDir;
 
     public AiMoving(AIStateMachine stateMachine) : base(stateMachine)
     {
-        m_Animator.SetBool(running, true);
         m_Animator.SetBool(combat, true);
+        m_BackObstDir = Vector3.zero;
     }
 
     public override void UpdateExecute()
@@ -40,32 +41,37 @@ public class AiMoving : AiState
         {
             Vector3 direction;
             Vector3 pointAtSafeDistance;
-            m_BackRay = new Ray(m_Transform.position, -m_Transform.forward);
-            m_LeftRay = new Ray(m_Transform.position, -m_Transform.right);
-            m_RightRay = new Ray(m_Transform.position, m_Transform.right);
+            Vector3 currentPosition = m_Transform.position;
+            m_BackRay = new Ray(currentPosition, -m_Transform.forward);
+            m_LeftRay = new Ray(currentPosition, -m_Transform.right);
+            m_RightRay = new Ray(currentPosition, m_Transform.right);
             if (Physics.Raycast(m_LeftRay, out m_LeftHit, 4.0f))
             {
+                m_BackObstDir = Vector3.zero;
                 m_Animator.SetInteger(moveState, 4);
 
-                Vector3 currentPos = m_Transform.position;
-                direction = (currentPos + m_Transform.right) - currentPos;
-                pointAtSafeDistance = currentPos + direction.normalized * m_SafeDistance;
+                direction = (currentPosition + m_Transform.right) - currentPosition;
+                pointAtSafeDistance = currentPosition + direction.normalized * m_SafeDistance;
             }
             else if (Physics.Raycast(m_RightRay, out m_RightHit, 4.0f))
             {
+                m_BackObstDir = Vector3.zero;
                 m_Animator.SetInteger(moveState, 3);
 
-                Vector3 currentPos = m_Transform.position;
-                direction = (currentPos - m_Transform.right) - currentPos;
-                pointAtSafeDistance = currentPos + direction.normalized * m_SafeDistance;
+                direction = (currentPosition - m_Transform.right) - currentPosition;
+                pointAtSafeDistance = currentPosition + direction.normalized * m_SafeDistance;
             }
             else if (Physics.Raycast(m_BackRay, out m_BackHit, 2.0f))
             {
+                if (m_BackObstDir == Vector3.zero)
+                {
+                    int chances = Random.Range(0, 2);
+                    m_BackObstDir = chances == 1 ? m_Transform.right : -m_Transform.right;
+                }
                 m_Animator.SetInteger(moveState, 4);
 
-                Vector3 currentPos = m_Transform.position;
-                direction = (currentPos + m_Transform.right) - currentPos;
-                pointAtSafeDistance = currentPos + direction.normalized * m_SafeDistance;
+                direction = (currentPosition + m_BackObstDir) - currentPosition;
+                pointAtSafeDistance = currentPosition + direction.normalized * m_SafeDistance;
             }
             else
             {
@@ -82,5 +88,6 @@ public class AiMoving : AiState
 
     public override void FixedUpdateExecute()
     {
+        
     }
 }

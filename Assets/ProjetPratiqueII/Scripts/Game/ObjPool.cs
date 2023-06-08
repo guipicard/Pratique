@@ -17,7 +17,7 @@ public class ObjPool : MonoBehaviour
     }
 
     public List<Pool> Pools;
-    public Dictionary<string, List<GameObject>> PoolsDictionary;
+    private Dictionary<string, List<GameObject>> PoolsDictionary;
 
     void Awake()
     {
@@ -30,10 +30,8 @@ public class ObjPool : MonoBehaviour
         SceneManager.sceneLoaded -= Init;
     }
 
-
-    public void Init(Scene scene, LoadSceneMode mode)
+    private void Init(Scene scene, LoadSceneMode mode)
     {
-        
         PoolsDictionary = new Dictionary<string, List<GameObject>>();
         foreach (var pool in Pools)
         {

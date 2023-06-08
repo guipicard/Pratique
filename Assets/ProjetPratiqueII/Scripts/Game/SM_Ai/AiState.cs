@@ -31,7 +31,13 @@ public abstract class AiState
     protected float m_PlayerDistance;
     private bool m_IsStabbing;
     private bool m_OutOfRange;
-    protected float m_CooldownElapsed;
+    private float m_CooldownElapsed;
+
+    public float CooldownElapsed
+    {
+        get { return m_CooldownElapsed; } 
+        set { m_CooldownElapsed = value; }
+    }
     private Outline m_OutlineScript;
     
     protected static readonly int running = Animator.StringToHash("Running");

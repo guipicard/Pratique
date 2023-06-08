@@ -11,6 +11,16 @@ public class AiAttack : AiState
     private int m_CurrentAttack;
     private float m_ArrowRelease;
 
+    
+    // RED
+    private bool m_Arrow1;
+    private bool m_Arrow2;
+    private bool m_Arrow3;
+
+    private float m_ArrowTime1 = 0.08f;
+    private float m_ArrowTime2 = 0.16f;
+    private float m_ArrowTime3 = 0.24f;
+
     public AiAttack(AIStateMachine stateMachine) : base(stateMachine)
     {
         switch (m_BulletTag)
@@ -27,7 +37,10 @@ public class AiAttack : AiState
                 break;
             case "Red_Arrow":
                 m_AttacksNum = 2;
-                m_ArrowRelease = 0.07f;
+                // m_ArrowRelease = 0.07f;
+                m_Arrow1 = false;
+                m_Arrow2 = false;
+                m_Arrow3 = false;
                 break;
         }
 
@@ -87,8 +100,9 @@ public class AiAttack : AiState
 
         if (m_Elapsed > 0.32f)
         {
-            m_CooldownElapsed = 0.0f;
-            _AiStateMachine.SetState(new AiDenfending(_AiStateMachine));
+            AiState state = new AiDenfending(_AiStateMachine);
+            state.CooldownElapsed = 0.0f;
+            _AiStateMachine.SetState(state);
         }
     }
 
@@ -228,7 +242,7 @@ public class AiAttack : AiState
                 }
                 if (m_Elapsed > 0.3f)
                 {
-                    m_CooldownElapsed = 0.0f;
+                    CooldownElapsed = 0.0f;
                     _AiStateMachine.SetState(new AiDenfending(_AiStateMachine));
                 }
                 break;
@@ -239,15 +253,24 @@ public class AiAttack : AiState
                     m_Launched = true;
                 }
 
-                if (m_Elapsed > m_ArrowRelease && !m_Shot)
+                if (m_Elapsed > m_ArrowTime1 && !m_Arrow1)
                 {
-                    if (m_Elapsed > 0.07f + (0.08f * 2)) m_Shot = true;
+                    m_Arrow1 = true;
                     LaunchBasicAttack();
-                    m_ArrowRelease += 0.08f;
+                }
+                else if (m_Elapsed > m_ArrowTime2 && !m_Arrow2)
+                {
+                    m_Arrow2 = true;
+                    LaunchBasicAttack();
+                }
+                else if (m_Elapsed > m_ArrowTime3 && !m_Arrow3)
+                {
+                    m_Arrow3 = true;
+                    LaunchBasicAttack();
                 }
                 if (m_Elapsed > 0.3f)
                 {
-                    m_CooldownElapsed = 0.0f;
+                    CooldownElapsed = 0.0f;
                     _AiStateMachine.SetState(new AiDenfending(_AiStateMachine));
                 }
                 break;
